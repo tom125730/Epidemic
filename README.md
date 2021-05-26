@@ -14,15 +14,15 @@
 - [目录](#目录)
 - [功能](#功能)
 - [使用方式](#使用方式)
-  - [腾讯云函数（推荐）](#腾讯云函数推荐)
-    - [1. Fork本项目](#1Fork本项目)
-    - [2. 准备需要的参数](#2准备需要的参数)
-    - [3. 将参数填到Secrets](#3将参数填到secrets)
-    - [4. 部署](#4部署)
+  - [腾讯云函数（推荐）](#腾讯云函数（推荐）)
+    - [1.Fork本项目](#1.Fork本项目)
+    - [2.准备需要的参数](#2.准备需要的参数)
+    - [3.将参数填到Secrets](#3.将参数填到secrets)
+    - [4.部署](#4.部署)
 - [通知推送方式](#通知推送方式)
 - [同步上游代码](#同步上游代码)
-  - [申请 Github Personal access tokens](#申请 Github Personal access tokens)
-  - [将参数填到 Secrets](#将参数填到 Secrets)
+  - [1.申请tokens](#申请tokens)
+  - [2.将参数填到Secrets](#将参数填到Secrets)
 - [申明](#申明)
 - [参考项目](#参考项目)
 
@@ -35,17 +35,17 @@
 
 ## 腾讯云函数（推荐）
 
-### 1. Fork本项目
+### 1.Fork本项目
 
 项目地址：[chiupam/Epidemic](https://github.com/chiupam/Epidemic)
 
-### 2. 准备需要的参数
+### 2.准备需要的参数
 
 - 为了确保权限足够, 获取这两个参数时不要使用子账户! 此外, 腾讯云账户需要 [实名认证](https://console.cloud.tencent.com/developer/auth) !
 - 开通云函数 `SCF` 的腾讯云账号，在 [访问秘钥页面](https://console.cloud.tencent.com/cam/capi) 获取账号的 `SecretID`，`SecretKey`
 - 依次登录 [SCF 云函数控制台](https://console.cloud.tencent.com/scf) 和 [SLS 控制台](https://console.cloud.tencent.com/sls) 开通相关服务，确保您已开通服务并创建相应 [服务角色](https://console.cloud.tencent.com/cam/role) **SCF_QcsRole、SLS_QcsRole**
 
-### 3. 将参数填到 Secrets
+### 3.将参数填到Secrets
 
 `Name`和`Value`格式如下：
   
@@ -55,7 +55,7 @@
 |TENCENT_SECRET_KEY | 腾讯云账户 SecretKey|
 |USERS_COVER | config.json 中内容|
 
-### 4. 部署
+### 4.部署
 
 - 首次 `fork` 可能要去 `Actions` 里面同意使用 `Actions` 条款.
 - 添加完上面 `3` 个 `Secrets` 后, 进入 `Actions` --> `Serverless`, 点击右边的 `Run workflow` 即可部署至腾讯云函数
@@ -68,12 +68,12 @@
 
 # 同步上游代码
 
-## 申请 Github Personal access tokens
+## 1.申请tokens
 
 - 点击左侧这个链接, [生成新的token](https://github.com/settings/tokens/new)
 - 为 `token` 设置名字, 把 `workflow` 勾选上，点击最下方 `Generate token` 即可生成 `token`.
   
-## 将参数填到 Secrets
+## 2.将参数填到Secrets
 
 `Name` 和` Value` 格式如下：
 

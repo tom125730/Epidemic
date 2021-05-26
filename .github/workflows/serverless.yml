@@ -1,0 +1,25 @@
+name: 'Serverless'
+
+on:
+  watch:
+    types: started
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: 执行部署脚本
+      env:
+          SERVERLESS_PLATFORM_VENDOR: tencent
+          CONFIG: ${{ secrets.CONFIG }}
+          BOT: ${{ secrets.BOT }}
+          TENCENT_SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+      run: |
+          echo "CONFIG" > ./config.json
+          echo "BOT" > ./bot.json
+          sudo chmod +x ./serverless/deploy.sh
+          bash ./serverless/deploy.sh
+

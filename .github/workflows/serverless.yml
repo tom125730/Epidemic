@@ -14,7 +14,7 @@ jobs:
       env:
           SERVERLESS_PLATFORM_VENDOR: tencent
           USERS_COVER: ${{ secrets.USERS_COVER }}
-          BOT_SET: ${{ secrets.BOT_SET }}
+          BOT_SET:  ${{ secrets.BOT_SET }}
           TENCENT_SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
           TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
       run: |

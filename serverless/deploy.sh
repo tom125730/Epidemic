@@ -5,6 +5,7 @@ sudo cp requirements.txt ./serverless
 sudo cp config.json ./serverless
 sudo cp bot.json ./serverless
 sudo cp agent.json ./serverless
+sudo cp PZData.json ./serverless
 cd ./serverless
 
 #删除lxml默认模块版本

@@ -129,7 +129,7 @@ def Epidemic(i, _name, _username, _password, _useragent, _notify, _token):
 def get_time():
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-with open('./user.json', 'r', encoding='utf-8') as user_file:
+with open('./config.json', 'r', encoding='utf-8') as user_file:
     user_data = json.load(user_file)
 
 with open('./agent.json', 'r', encoding='utf-8') as UA_file:

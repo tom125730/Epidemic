@@ -1,0 +1,39 @@
+# File: .github/workflows/repo-sync.yml
+
+name: Repo Sync
+
+on: 
+  workflow_dispatch: # 手动执行
+  schedule: # 定时执行
+    - cron: '50 6,22 * * *' # 06:50、14:50 (UTC+8)
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    env:
+      PAT: ${{ secrets.PAT }}
+      dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+        
+    - name: Sync chiupam/Epidemic@master # 同步上源仓库
+      uses: repo-sync/github-sync@v2
+      if: env.PAT
+      with:
+        source_repo: "https://github.com/chiupam/Epidemic.git"
+        source_branch: "master"
+        destination_branch: "master"
+        github_token: ${{ secrets.PAT }}
+
+    - name: Sync Github -> Gitee # 推送到 Gitee (我个人使用, 其他人勿理)
+      uses: Yikun/hub-mirror-action@master
+      if: env.dst_key
+      with:
+        src: github/chiupam
+        dst: gitee/chiupam
+        static_list: "Epidemic"
+        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+        dst_token: ${{ secrets.GITEE_TOKEN }}
+          

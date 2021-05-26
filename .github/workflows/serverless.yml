@@ -14,12 +14,12 @@ jobs:
       env:
           SERVERLESS_PLATFORM_VENDOR: tencent
           USERS_COVER: ${{ secrets.USERS_COVER }}
-          BOT_SET:  ${{ secrets.BOT_SET }}
+          BOT_SET: ${{ secrets.BOT_SET }}
           TENCENT_SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
           TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
       run: |
           echo "$USERS_COVER" > ./config.json
-          echo "BOT_SET" > ./bot.json
+          echo "$BOT_SET" > ./bot.json
           sudo chmod +x ./serverless/deploy.sh
           bash ./serverless/deploy.sh
 

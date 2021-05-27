@@ -1,5 +1,5 @@
 <h1 align="center">
-  疫情防控签到(云函数版)
+  青年大学习(云函数版)
   <br>
   Author: chiupam
 </h1>
@@ -19,10 +19,14 @@
     - [2.准备需要的参数](#2准备需要的参数)
     - [3.将参数填到Secrets](#3将参数填到secrets)
     - [4.部署](#4部署)
+  - [使用Actions（被禁用）](#使用Actions被禁用)
+    - [解释及声明](#解释及声明)
 - [通知推送方式](#通知推送方式)
 - [同步上游代码](#同步上游代码)
-  - [1.申请tokens](#1申请tokens)
-  - [2.将参数填到Secrets](#2将参数填到Secrets)
+  - [使用GtiHubActions](#使用GtiHubActions)
+    - [1.申请token](#1申请token)
+    - [2.将参数填到Secrets](#2将参数填到Secrets)
+  - [使用pull应用](#使用pull应用)
 - [申明](#申明)
 - [参考项目](#参考项目)
 
@@ -37,7 +41,7 @@
 
 ### 1.Fork本项目
 
-项目地址：[chiupam/Epidemic](https://github.com/chiupam/Epidemic)
+项目地址：[chiupam/QNDXX](https://github.com/chiupam/QNDXX)
 
 ### 2.准备需要的参数
 
@@ -60,26 +64,34 @@
 - 首次 `fork` 可能要去 `Actions` 里面同意使用 `Actions` 条款.
 - 添加完上面 `3` 个 `Secrets` 后, 进入 `Actions` --> `Serverless`, 点击右边的 `Run workflow` 即可部署至腾讯云函数
 
-# 通知推送方式
+## 使用Actions（被禁用）
 
-## 1. PushPlus
+### 解释及声明
 
-只需要一个`token`, 参考 [获取 PushPlus 的 token](http://www.pushplus.plus/login?redirectUrl=/message)
+使用 GitHub Actions 执行此类任务属于 **滥用谷歌资源** , 因此 **不主动开发** 这种使用方法!
 
 # 同步上游代码
 
-## 1.申请tokens
+## 使用GtiHubActions
+
+### 1.申请token
 
 - 点击右侧这个链接, [生成新的token](https://github.com/settings/tokens/new)
 - 为 `token` 设置名字, 把 `workflow` 勾选上，点击最下方 `Generate token` 即可生成 `token`.
   
-## 2.将参数填到Secrets
+### 2.将参数填到Secrets
 
 `Name` 和` Value` 格式如下：
 
 | Name | Value |
 |:---:|:---:|
 | PAT | 刚刚申请的 `token` 的值 |
+
+## 使用pull应用
+
+### 安装pull应用
+
+安装 [pull](https://github.com/apps/pull) 应用, 实现自动同步上游代码.
 
 # 申明
 
@@ -92,4 +104,3 @@
 7. 如果任何单位或个人认为此脚本可能涉嫌侵犯其权利, 应及时通知并提供身份证明，所有权证明, 我将在收到认证文件确认后删除此脚本.
 8. 所有直接或间接使用, 查看此脚本的人均应该仔细阅读此声明.
 9. 本人保留随时更改或补充此声明的权利, 一旦您使用或复制了此脚本, 即视为您已接受此免责声明.
-

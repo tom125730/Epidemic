@@ -41,7 +41,7 @@
 
 ### 1.Fork本项目
 
-项目地址：[chiupam/QNDXX](https://github.com/chiupam/QNDXX)
+项目地址：[chiupam/Epidemic](https://github.com/chiupam/Epidemic)
 
 ### 2.准备需要的参数
 

@@ -1,5 +1,5 @@
 <h1 align="center">
-  青年大学习(云函数版)
+  疫情防控签到(云函数版)
   <br>
   Author: chiupam
 </h1>

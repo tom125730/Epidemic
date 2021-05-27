@@ -27,7 +27,7 @@ def Epidemic(i, _name, _username, _password, _useragent, _notify, _token):
     tree = etree.HTML(resp.text)
     result = str(tree.xpath('/html/body/script/text()'))
     if result.find('用户名或者密码错误，请重新输入!') != -1:
-        print(f'{get_time()} 用户名或者密码错误!')
+        print(f'{get_time()} {_name}用户名或者密码错误!')
         content = {
             "原因": "用户名或者密码错误!",
             "读取的账号": _username,
@@ -42,11 +42,11 @@ def Epidemic(i, _name, _username, _password, _useragent, _notify, _token):
         tree = etree.HTML(resp.text)
         result = str(tree.xpath('/html/body/script/text()'))
         if result.find('当前采集日期已登记！') != -1:
-            print(f'{get_time()} 当前采集日期已登记！')
+            print(f'{get_time()} {_name}当前采集日期已登记！')
             tgNotify_msg = ''
         elif result.find('只能1点至18点可以填报！') != -1:
             tgNotify_msg = f'账号{n}：{_name}\n\t\t└只能1点至18点可以填报！'
-            print(f'{get_time()} 只能1点至18点可以填报！准备结束进程~\n')
+            print(f'{get_time()} {_name}只能1点至18点可以填报！\n')
             # sys.exit()
         elif result.find('填报信息还未配置或开启，不能填报！') != -1:
             tgNotify_msg = f'账号{n}：{_name}\n\t\t└填报信息还未配置或开启！\n'
@@ -99,7 +99,7 @@ def Epidemic(i, _name, _username, _password, _useragent, _notify, _token):
             # 发起post请求
             try:
                 resp2 = session.post(url=indexUrl, data=post_data, headers=headers)
-                if resp.ok:
+                if resp2.ok:
                     tree2 = etree.HTML(resp2.text)
                     result2 = str(tree2.xpath('/html/body/script/text()'))
                     if result2.find('提交成功！') != -1:

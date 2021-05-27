@@ -3,6 +3,7 @@
 name: Repo Sync
 
 on: 
+  push:
   workflow_dispatch: # 手动执行
   schedule: # 定时执行
     - cron: '50 6,22 * * *' # 06:50、14:50 (UTC+8)

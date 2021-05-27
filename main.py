@@ -105,7 +105,7 @@ def Epidemic(i, _name, _username, _password, _useragent, _notify, _token):
                     if result2.find('提交成功！') != -1:
                         print(f'{get_time()} {_name}签到成功~')
                         tgNotify_msg = f'账号{n}：{_name}\n\t\t└签到成功~\n'
-                        if time.localtime()[3] = 7: # 云函数用的是UTC+0
+                        if time.localtime()[3] == 7: # 云函数用的是UTC+0
                             # 封装pushplus的post数据包
                             post_data = {
                                 "自检步骤": "访问下面的网址，登录并签到，以检查是否签到成功",

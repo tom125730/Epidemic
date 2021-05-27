@@ -1,8 +1,7 @@
 name: 'Serverless'
 
 on:
-  watch:
-    types: started
+  push:
   workflow_dispatch:
 
 jobs:

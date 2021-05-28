@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
     - uses: actions/checkout@v2
     - name: deploy
@@ -21,4 +22,12 @@ jobs:
           echo "$BOT_SET" > ./bot.json
           sudo chmod +x ./serverless/deploy.sh
           bash ./serverless/deploy.sh
+        
+    - name: Delete Workflow Runs # 删除执行日志
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        retain_days: 1
+        keep_minimum_runs: 0
 

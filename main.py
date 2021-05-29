@@ -158,7 +158,16 @@ def tgNofity(start, tgNotify_msg, bot_token, user_id):
             "disable_web_page_preview": False
         }
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        requests.post(url=url, data=data, headers=headers)
+        try:
+            r = requests.post(url=url, data=data, headers=headers)
+            if r.ok:
+                print("Telegram发送通知消息成功🎉。\n")
+            elif r.status_code == '400':
+                print("请主动给bot发送一条消息并检查接收用户ID是否正确。\n")
+            elif r.status_code == '401':
+                print("Telegram bot token 填写错误。\n")
+        except Exception as error:
+            print(f"telegram发送通知消息失败！！\n{error}")
 
 
 def main(event, context):

@@ -1,2 +1,4 @@
 lxml==4.6.2
 requests==2.25.1
+httpx==0.18.1
+asyncio==3.4.3

@@ -15,5 +15,6 @@ inputs:
     - timer: # 定时触发器
         name: ${name} #触发器名称
         parameters:
-          cronExpression: '0 1 7,15 * * * *'
+#           cronExpression: '0 1 7,15 * * * *'
+          cronExpression: '0 1 11,15 * * * *'
           enable: true

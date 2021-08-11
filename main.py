@@ -4,7 +4,7 @@ import requests
 import time
 
 
-def epidmeic():
+def epidemic():
     url = 'http://xg.kmmu.edu.cn/SPCP/Web/'
     session = requests.session()
     headers = {
@@ -148,7 +148,7 @@ def main(event, context):
         agent = UA_data[i % len(UA_data)]
         notify = user_data[i]['_notify']
         token = user_data[i]['_token']
-        epidmeic()
+        epidemic()
 
 
 if __name__ == '__main__':

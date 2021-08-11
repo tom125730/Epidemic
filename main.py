@@ -4,7 +4,7 @@ import requests
 import time
 
 
-def epidmeic(name, username, password, agent, notify, token):
+def epidmeic():
     url = 'http://xg.kmmu.edu.cn/SPCP/Web/'
     session = requests.session()
     headers = {
@@ -31,22 +31,26 @@ def epidmeic(name, username, password, agent, notify, token):
             "读取的账号": username,
             "读取的密码": password,
         }
-        push(notify, token, '登陆失败！', json.dumps(content), 'json')
+        push('登陆失败！', json.dumps(content), 'json')
         return
     indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
     resp = session.get(url=indexUrl, headers=headers)
     tree = etree.HTML(resp.text)
     result = str(tree.xpath('/html/body/script/text()'))
-    if result.find('当前采集日期已登记！') != -1:
+    if "当前采集日期已登记！" in result:
         print(f'{get_time()} {name}当前采集日期已登记！')
         return
-    elif result.find('只能1点至18点可以填报！') != -1:
+    elif "只能1点至18点可以填报！" in result:
         print(f'{get_time()} {name}只能1点至18点可以填报！\n')
         return
-    elif result.find('填报信息还未配置或开启，不能填报！') != -1:
-        print(f'{get_time()} 只能1点至18点可以填报！准备结束进程~')
-        errorMsg = f'填报信息还未配置或开启，不能填报！\n原因可能是平台出错，请耐心等待下午的重新签到或自查！\n登录网址：{url}\n签到入口：{url}Account/ChooseSys\n表单网址：{indexUrl}'
-        push(notify, token, '签到失败！', errorMsg, 'txt')
+    elif "填报信息还未配置或开启，不能填报！" in result:
+        print(f'{get_time()} 只能1点至18点可以填报！')
+        errorMsg = f'填报信息还未配置或开启，不能填报！\n' \
+                   f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
+                   f'登录网址：{url}\n' \
+                   f'签到入口：{url}Account/ChooseSys\n' \
+                   f'表单网址：{indexUrl}'
+        push('签到失败！', errorMsg, 'txt')
         return
     with open('./PZData.json', 'r', encoding='utf-8') as PZData_file:
         PZData = json.load(PZData_file)
@@ -87,7 +91,7 @@ def epidmeic(name, username, password, agent, notify, token):
         'radioCount': '6',
         'checkboxCount': '0',
         'blackCount': '1',
-        'PZData': f'{PZData}',
+        'PZData': str(PZData),
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
     resp2 = session.post(url=indexUrl, data=post_data, headers=headers)
@@ -112,14 +116,14 @@ def epidmeic(name, username, password, agent, notify, token):
                     tree.xpath('//*[@id="FaCountyName"]/@value')[0] +
                     tree.xpath('//*[@id="form1"]/div[1]/div[5]/div[2]/input/@value')[0],
         }
-        push(notify, token, '今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
+        push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
 
 
 def get_time():
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
-def push(notify, token, title, content, template):
+def push(title, content, template):
     if notify and "XX" not in token:
         url = 'http://www.pushplus.plus/send'
         data = {
@@ -132,6 +136,7 @@ def push(notify, token, title, content, template):
 
 
 def main(event, context):
+    global name, username, password, agent, notify, token
     with open('./config.json', 'r', encoding='utf-8') as user_file:
         user_data = json.load(user_file)
     with open('./agent.json', 'r', encoding='utf-8') as UA_file:
@@ -143,8 +148,9 @@ def main(event, context):
         agent = UA_data[i % len(UA_data)]
         notify = user_data[i]['_notify']
         token = user_data[i]['_token']
-        epidmeic(name, username, password, agent, notify, token)
+        epidmeic()
 
 
 if __name__ == '__main__':
+    name, username, password, agent, notify, token = "", "", "", "", "", ""
     main("", "")

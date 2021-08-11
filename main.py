@@ -14,20 +14,20 @@ def epidemic():
     resp = session.get(url=url, headers=headers)
     tree = etree.HTML(resp.text)
     reSubmiteFlag = tree.xpath('//*[@id="form1"]/input[1]/@value')[0]
-    post_data = {
+    data = {
         'ReSubmiteFlag': reSubmiteFlag,
         'txtUid': username,
         'txtPwd': password,
         'StuLoginMode': 1,
         'codeInput': ''
     }
-    resp = session.post(url=url, data=post_data, headers=headers)
+    resp = session.post(url=url, data=data, headers=headers)
     tree = etree.HTML(resp.text)
     result = str(tree.xpath('/html/body/script/text()'))
     if "用户名或者密码错误，请重新输入" in result:
         print(f'{get_time()} {name}用户名或者密码错误!')
         content = {
-            "原因": "用户名或者密码错误!",
+            "失败原因": "用户名或者密码错误!",
             "读取的账号": username,
             "读取的密码": password,
         }
@@ -44,17 +44,17 @@ def epidemic():
         print(f'{get_time()} {name}只能1点至18点可以填报！\n')
         return
     elif "填报信息还未配置或开启，不能填报！" in result:
-        print(f'{get_time()} 只能1点至18点可以填报！')
+        print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
         errorMsg = f'填报信息还未配置或开启，不能填报！\n' \
                    f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
                    f'登录网址：{url}\n' \
                    f'签到入口：{url}Account/ChooseSys\n' \
-                   f'表单网址：{indexUrl}'
+                   f'表单网址：{url}Report/Index'
         push('签到失败！', errorMsg, 'txt')
         return
     with open('./PZData.json', 'r', encoding='utf-8') as PZData_file:
         PZData = json.load(PZData_file)
-    post_data = {
+    data = {
         'StudentId': tree.xpath('//*[@id="StudentId"]/@value')[0],
         'Name': tree.xpath('//*[@id="Name"]/@value')[0],
         'Sex': tree.xpath('//*[@id="Sex"]/@value')[0],
@@ -94,16 +94,19 @@ def epidemic():
         'PZData': str(PZData),
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
-    resp2 = session.post(url=indexUrl, data=post_data, headers=headers)
-    if not resp2.ok:
+    resp = session.post(url=indexUrl, data=data, headers=headers)
+    if resp.ok:
+        print(f'{get_time()} {name}签到成功！')
+    if time.localtime()[3] != 7:
         return
-    tree2 = etree.HTML(resp2.text)
-    result2 = str(tree2.xpath('/html/body/script/text()'))
-    if '提交成功！' in result2 and time.localtime()[3] == 7:
+    if resp.ok:
+        tree = etree.HTML(resp.text)
+        if '提交成功！' not in tree.xpath('/html/body/script/text()'):
+            return
         post_data = {
-            "自检步骤": "访问下面的网址，登录并签到，以检查是否签到成功",
+            "自检步骤": "访问下面的网址，登录并签到，以检查是否补签成功",
             "登录网址": url,
-            "学号及账号": tree.xpath('//*[@id="StudentId"]/@value')[0],
+            "学号": tree.xpath('//*[@id="StudentId"]/@value')[0],
             "密码": password,
             "姓名": tree.xpath('//*[@id="Name"]/@value')[0],
             "性别": tree.xpath('//*[@id="Sex"]/@value')[0],
@@ -117,6 +120,14 @@ def epidemic():
                     tree.xpath('//*[@id="form1"]/div[1]/div[5]/div[2]/input/@value')[0],
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
+    else:
+        post_data = {
+            "网址": url,
+            "学号": username,
+            "密码": password,
+            "姓名": user
+        }
+        push('今天未成功签到！', json.dumps(post_data), 'json')
 
 
 def get_time():

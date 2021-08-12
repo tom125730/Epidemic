@@ -13,7 +13,7 @@ inputs:
   timeout: 900 # 超时
   events: # 触发器
     - timer: # 定时触发器
-        name: '每日签到' # 触发器名称
+        name: ${main} # 触发器名称
         parameters:
           cronExpression: '0 1 7,15 * * * *'
           # cronExpression: '0 1 11,15 * * * *'

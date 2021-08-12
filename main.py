@@ -124,7 +124,7 @@ def epidemic():
             "网址": url,
             "学号": username,
             "密码": password,
-            "姓名": user
+            "姓名": name
         }
         push('今天未成功签到！', json.dumps(post_data), 'json')
 

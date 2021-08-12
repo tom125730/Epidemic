@@ -23,7 +23,7 @@ def epidemic():
     }
     resp = session.post(url=url, data=data, headers=headers)
     tree = etree.HTML(resp.text)
-    alert = tree.xpath('/html/body/script/text()')
+    alert = str(tree.xpath('/html/body/script/text()'))
     if "用户名或者密码错误，请重新输入" in alert:
         print(f'{get_time()} {name}用户名或者密码错误!')
         content = {
@@ -36,7 +36,7 @@ def epidemic():
     indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
     resp = session.get(url=indexUrl, headers=headers)
     tree = etree.HTML(resp.text)
-    alert = tree.xpath('/html/body/script/text()')
+    alert = str(tree.xpath('/html/body/script/text()'))
     if "当前采集日期已登记！" in alert:
         print(f'{get_time()} {name}当前采集日期已登记！')
         return
@@ -95,7 +95,7 @@ def epidemic():
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
     resp = session.post(url=indexUrl, data=data, headers=headers)
-    alert = etree.HTML(resp.text).xpath('/html/body/script/text()')
+    alert = str(etree.HTML(resp.text).xpath('/html/body/script/text()'))
     if '提交成功！' in alert:
         print(f'{get_time()} {name}签到成功！')
     if time.localtime()[3] != 7:

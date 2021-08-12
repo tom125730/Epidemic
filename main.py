@@ -23,8 +23,8 @@ def epidemic():
     }
     resp = session.post(url=url, data=data, headers=headers)
     tree = etree.HTML(resp.text)
-    result = str(tree.xpath('/html/body/script/text()'))
-    if "用户名或者密码错误，请重新输入" in result:
+    alert = tree.xpath('/html/body/script/text()')
+    if "用户名或者密码错误，请重新输入" in alert:
         print(f'{get_time()} {name}用户名或者密码错误!')
         content = {
             "失败原因": "用户名或者密码错误!",
@@ -36,21 +36,21 @@ def epidemic():
     indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
     resp = session.get(url=indexUrl, headers=headers)
     tree = etree.HTML(resp.text)
-    result = str(tree.xpath('/html/body/script/text()'))
-    if "当前采集日期已登记！" in result:
+    alert = tree.xpath('/html/body/script/text()')
+    if "当前采集日期已登记！" in alert:
         print(f'{get_time()} {name}当前采集日期已登记！')
         return
-    elif "只能1点至18点可以填报！" in result:
+    elif "只能1点至18点可以填报！" in alert:
         print(f'{get_time()} {name}只能1点至18点可以填报！\n')
         return
-    elif "填报信息还未配置或开启，不能填报！" in result:
+    elif "填报信息还未配置或开启，不能填报！" in alert:
         print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
-        errorMsg = f'填报信息还未配置或开启，不能填报！\n' \
+        error = f'填报信息还未配置或开启，不能填报！\n' \
                    f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
                    f'登录网址：{url}\n' \
                    f'签到入口：{url}Account/ChooseSys\n' \
                    f'表单网址：{url}Report/Index'
-        push('签到失败！', errorMsg, 'txt')
+        push('签到失败！', error, 'txt')
         return
     with open('./PZData.json', 'r', encoding='utf-8') as PZData_file:
         PZData = json.load(PZData_file)
@@ -95,29 +95,28 @@ def epidemic():
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
     resp = session.post(url=indexUrl, data=data, headers=headers)
-    if resp.ok:
+    alert = etree.HTML(resp.text).xpath('/html/body/script/text()')
+    if '提交成功！' in alert:
         print(f'{get_time()} {name}签到成功！')
     if time.localtime()[3] != 7:
         return
-    if resp.ok:
-        tree = etree.HTML(resp.text)
-        if '提交成功！' not in tree.xpath('/html/body/script/text()'):
-            return
+    if resp.ok and '提交成功！' in alert:
         post_data = {
             "自检步骤": "访问下面的网址，登录并签到，以检查是否补签成功",
             "登录网址": url,
             "学号": tree.xpath('//*[@id="StudentId"]/@value')[0],
             "密码": password,
             "姓名": tree.xpath('//*[@id="Name"]/@value')[0],
-            "性别": tree.xpath('//*[@id="Sex"]/@value')[0],
             "班级": tree.xpath('//*[@id="ClassName"]/@value')[0],
-            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0],
-            "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] + tree.xpath('//*[@id="CityName"]/@value')[0] +
-                     tree.xpath('//*[@id="CountyName"]/@value')[0] +
-                     tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0],
-            "家庭住址": tree.xpath('//*[@id="FaProvinceName"]/@value')[0] + tree.xpath('//*[@id="FaCityName"]/@value')[0] +
+            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0],            
+            "家庭住址": tree.xpath('//*[@id="FaProvinceName"]/@value')[0] + 
+                    tree.xpath('//*[@id="FaCityName"]/@value')[0] +
                     tree.xpath('//*[@id="FaCountyName"]/@value')[0] +
                     tree.xpath('//*[@id="form1"]/div[1]/div[5]/div[2]/input/@value')[0],
+            "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] + 
+                     tree.xpath('//*[@id="CityName"]/@value')[0] +
+                     tree.xpath('//*[@id="CountyName"]/@value')[0] +
+                     tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0],
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
     else:
@@ -150,13 +149,13 @@ def main(event, context):
     global name, username, password, agent, notify, token
     with open('./config.json', 'r', encoding='utf-8') as user_file:
         user_data = json.load(user_file)
-    with open('./agent.json', 'r', encoding='utf-8') as UA_file:
-        UA_data = json.load(UA_file)
+    with open('./agent.json', 'r', encoding='utf-8') as agent_file:
+        agent_data = json.load(agent_file)
     for i in range(len(user_data)):
         name = user_data[i]['_name']
         username = user_data[i]['_username']
         password = user_data[i]['_password']
-        agent = UA_data[i % len(UA_data)]
+        agent = agent_data[i % len(agent_data)]
         notify = user_data[i]['_notify']
         token = user_data[i]['_token']
         epidemic()

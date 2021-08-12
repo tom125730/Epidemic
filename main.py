@@ -8,7 +8,14 @@ def epidemic():
     url = 'http://xg.kmmu.edu.cn/SPCP/Web/'
     session = requests.session()
     headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'accept': 'text/html,' \
+                  'application/xhtml+xml,' \
+                  'application/xml;q=0.9,' \
+                  'image/avif,' \
+                  'image/webp,' \
+                  'image/apng,' \
+                  '*/*;q=0.8,' \
+                  'application/signed-exchange;v=b3;q=0.9',
         'user-agent': agent
     }
     resp = session.get(url=url, headers=headers)

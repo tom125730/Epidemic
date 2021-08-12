@@ -24,7 +24,7 @@ def epidemic():
     resp = session.post(url=url, data=data, headers=headers)
     tree = etree.HTML(resp.text)
     alert = str(tree.xpath('/html/body/script/text()'))
-    if "用户名或者密码错误，请重新输入" in alert:
+    if "用户名或者密码错误" in alert:
         print(f'{get_time()} {name}用户名或者密码错误!')
         content = {
             "失败原因": "用户名或者密码错误!",
@@ -37,13 +37,13 @@ def epidemic():
     resp = session.get(url=indexUrl, headers=headers)
     tree = etree.HTML(resp.text)
     alert = str(tree.xpath('/html/body/script/text()'))
-    if "当前采集日期已登记！" in alert:
+    if "已登记" in alert:
         print(f'{get_time()} {name}当前采集日期已登记！')
         return
-    elif "只能1点至18点可以填报！" in alert:
-        print(f'{get_time()} {name}只能1点至18点可以填报！\n')
+    elif "只能1点至18点" in alert:
+        print(f'{get_time()} {name}只能1点至18点可以填报！')
         return
-    elif "填报信息还未配置或开启，不能填报！" in alert:
+    elif "填报信息还未配置或开启" in alert:
         print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
         error = f'填报信息还未配置或开启，不能填报！\n' \
                    f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
@@ -96,11 +96,11 @@ def epidemic():
     }
     resp = session.post(url=indexUrl, data=data, headers=headers)
     alert = str(etree.HTML(resp.text).xpath('/html/body/script/text()'))
-    if '提交成功！' in alert:
+    if '提交成功' in alert:
         print(f'{get_time()} {name}签到成功！')
     if time.localtime()[3] != 7:
         return
-    if resp.ok and '提交成功！' in alert:
+    if resp.ok and '提交成功' in alert:
         post_data = {
             "自检步骤": "访问下面的网址，登录并签到，以检查是否补签成功",
             "登录网址": url,
@@ -116,7 +116,7 @@ def epidemic():
             "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] + 
                      tree.xpath('//*[@id="CityName"]/@value')[0] +
                      tree.xpath('//*[@id="CountyName"]/@value')[0] +
-                     tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0],
+                     tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0]
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
     else:

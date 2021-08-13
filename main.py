@@ -8,14 +8,7 @@ def epidemic():
     url = 'http://xg.kmmu.edu.cn/SPCP/Web/'
     session = requests.session()
     headers = {
-        'accept': 'text/html,' \
-                  'application/xhtml+xml,' \
-                  'application/xml;q=0.9,' \
-                  'image/avif,' \
-                  'image/webp,' \
-                  'image/apng,' \
-                  '*/*;q=0.8,' \
-                  'application/signed-exchange;v=b3;q=0.9',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'user-agent': agent
     }
     resp = session.get(url=url, headers=headers)
@@ -53,10 +46,10 @@ def epidemic():
     elif "填报信息还未配置或开启" in alert:
         print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
         error = f'填报信息还未配置或开启，不能填报！\n' \
-                   f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
-                   f'登录网址：{url}\n' \
-                   f'签到入口：{url}Account/ChooseSys\n' \
-                   f'表单网址：{url}Report/Index'
+                f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
+                f'登录网址：{url}\n' \
+                f'签到入口：{url}Account/ChooseSys\n' \
+                f'表单网址：{url}Report/Index'
         push('签到失败！', error, 'txt')
         return
     with open('./PZData.json', 'r', encoding='utf-8') as PZData_file:
@@ -115,12 +108,12 @@ def epidemic():
             "密码": password,
             "姓名": tree.xpath('//*[@id="Name"]/@value')[0],
             "班级": tree.xpath('//*[@id="ClassName"]/@value')[0],
-            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0],            
-            "家庭住址": tree.xpath('//*[@id="FaProvinceName"]/@value')[0] + 
+            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0],
+            "家庭住址": tree.xpath('//*[@id="FaProvinceName"]/@value')[0] +
                     tree.xpath('//*[@id="FaCityName"]/@value')[0] +
                     tree.xpath('//*[@id="FaCountyName"]/@value')[0] +
                     tree.xpath('//*[@id="form1"]/div[1]/div[5]/div[2]/input/@value')[0],
-            "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] + 
+            "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] +
                      tree.xpath('//*[@id="CityName"]/@value')[0] +
                      tree.xpath('//*[@id="CountyName"]/@value')[0] +
                      tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0]

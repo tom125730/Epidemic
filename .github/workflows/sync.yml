@@ -29,15 +29,23 @@ jobs:
         destination_branch: "master"
         github_token: ${{ secrets.PAT }}
 
+#    - name: Sync Github -> Gitee # 推送到 Gitee (我个人使用, 其他人勿理)
+#      uses: Yikun/hub-mirror-action@master
+#      if: env.dst_key
+#      with:
+#        src: github/chiupam
+#        dst: gitee/chiupam
+#        static_list: "Epidemic"
+#        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+#        dst_token: ${{ secrets.GITEE_TOKEN }}
+
     - name: Sync Github -> Gitee # 推送到 Gitee (我个人使用, 其他人勿理)
-      uses: Yikun/hub-mirror-action@master
-      if: env.dst_key
+      uses: wearerequired/git-mirror-action@master
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
       with:
-        src: github/chiupam
-        dst: gitee/chiupam
-        static_list: "Epidemic"
-        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
-        dst_token: ${{ secrets.GITEE_TOKEN }}
+        source-repo: "git@github.com:chiupam/Epidemic.gita"
+        destination-repo: "git@gitee.com:chiupam/Epidemic.git"
         
     - name: Delete Workflow Runs # 删除执行日志
       uses: Mattraks/delete-workflow-runs@main

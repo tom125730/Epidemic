@@ -11,26 +11,16 @@ def epidemic():
     session = requests.session()
     url = "https://xg.kmmu.edu.cn/SPCP/Web/"
     headers = {"User-Agent": agent}
-    parms = {
-        "ReSubmiteFlag": uuid4(),
-        "StuLoginMode": "1",
-        "txtUid": username,
-        "txtPwd": password,
-        "codeInput": ""
-    }
+    parms = {"ReSubmiteFlag": uuid4(), "StuLoginMode": "1", "txtUid": username, "txtPwd": password, "codeInput": ""}
     resp = session.post(url, data=parms, headers=headers, proxies={"http": None, "https": None})
     alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if "用户名或者密码错误" in alert:
         print(f'{get_time()} {name} 用户名或者密码错误!')
-        content = {
-            "失败原因": "用户名或者密码错误!",
-            "读取的账号": username,
-            "读取的密码": password,
-        }
+        content = {"失败原因": "用户名或者密码错误!", "读取的账号": username, "读取的密码": password}
         push('登陆失败！', json.dumps(content), 'json')
         return
     url = "http://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
-    resp = session.get(url=url, headers=headers, proxies={"http": None, "https": None})
+    resp = session.get(url, headers=headers, proxies={"http": None, "https": None})
     tree = html(resp.text)
     alert = str(tree.xpath('/html/body/script/text()')[0])
     # alert = findall(r".*\('(.*)\',\{ic.*", str(tree.xpath('/html/body/script/text()')[0]))[0]
@@ -44,9 +34,7 @@ def epidemic():
         print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
         error = f'填报信息还未配置或开启，不能填报！\n' \
                 f'原因可能是平台出错，请耐心等待下午的重新签到或自查！\n' \
-                f'登录网址：{url}\n' \
-                f'签到入口：{url}Account/ChooseSys\n' \
-                f'表单网址：{url}Report/Index'
+                f'登录网址：https://xg.kmmu.edu.cn/SPCP/Web/'
         push('签到失败！', error, 'txt')
         return
     data = {
@@ -87,46 +75,16 @@ def epidemic():
         'checkboxCount': '0',
         'blackCount': '1',
         'PZData': str([
-            {
-                "OptionName": "以上症状都没有",
-                "SelectId": "71a16876-3d52-4510-8c96-09b232a0161b",
-                "TitleId": "eb0c8db7-b4dd-4ad6-b58a-626fc3336f16",
-                "OptionType": "0"
-            },
-            {
-                "OptionName": "否，身体健康",
-                "SelectId": "083d90f5-5fa2-4a6d-a231-fe315b5104a3",
-                "TitleId": "a9a30b10-f88e-4776-ac74-b5a10fa11886",
-                "OptionType": "0"
-            },
-            {
-                "OptionName": "否，不是疑似感染者",
-                "SelectId": "994c60eb-6f68-48bd-8bda-49a8a7ea812c",
-                "TitleId": "37e33b7d-5575-48c3-b59b-d4b7f6a6a0b5",
-                "OptionType": "0"
-            },
-            {
-                "OptionName": "否",
-                "SelectId": "18e9be47-deee-4eb0-8318-935f7ec832fd",
-                "TitleId": "986a95ff-5ce4-4417-9810-b1e190594f34",
-                "OptionType": "0"
-            },
-            {
-                "OptionName": "否",
-                "SelectId": "8dce119f-8eba-45b7-ac3c-ecb49e480dd3",
-                "TitleId": "3a3a10c8-02a7-4f16-95e5-f8ef5c8bfd75",
-                "OptionType": "0"
-            },
-            {
-                "OptionName": "健康",
-                "SelectId": "fe8b77d7-0014-49e1-bea0-46b0bff13898",
-                "TitleId": "6002f891-d80d-4e01-ad6d-651e01df394b",
-                "OptionType": "0"
-            }
+            {"OptionName": "以上症状都没有", "SelectId": "71a16876-3d52-4510-8c96-09b232a0161b", "TitleId": "eb0c8db7-b4dd-4ad6-b58a-626fc3336f16", "OptionType": "0"},
+            {"OptionName": "否，身体健康", "SelectId": "083d90f5-5fa2-4a6d-a231-fe315b5104a3", "TitleId": "a9a30b10-f88e-4776-ac74-b5a10fa11886", "OptionType": "0"},
+            {"OptionName": "否，不是疑似感染者", "SelectId": "994c60eb-6f68-48bd-8bda-49a8a7ea812c", "TitleId": "37e33b7d-5575-48c3-b59b-d4b7f6a6a0b5", "OptionType": "0"},
+            {"OptionName": "否", "SelectId": "18e9be47-deee-4eb0-8318-935f7ec832fd", "TitleId": "986a95ff-5ce4-4417-9810-b1e190594f34", "OptionType": "0"},
+            {"OptionName": "否", "SelectId": "8dce119f-8eba-45b7-ac3c-ecb49e480dd3", "TitleId": "3a3a10c8-02a7-4f16-95e5-f8ef5c8bfd75", "OptionType": "0"},
+            {"OptionName": "健康", "SelectId": "fe8b77d7-0014-49e1-bea0-46b0bff13898", "TitleId": "6002f891-d80d-4e01-ad6d-651e01df394b", "OptionType": "0"}
         ]),
         'ReSubmiteFlag': uuid4()
     }
-    resp = session.post(url=url, data=data, headers=headers)
+    resp = session.post(url, data=data, headers=headers)
     alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if '提交成功' in alert:
         print(f'{get_time()} {name} 签到成功！')
@@ -135,7 +93,7 @@ def epidemic():
     if resp.ok and '提交成功' in alert:
         post_data = {
             "自检步骤": "访问下面的网址，登录并签到，以检查是否补签成功",
-            "登录网址": url,
+            "登录网址": "https://xg.kmmu.edu.cn/SPCP/Web/",
             "学号": tree.xpath('//*[@id="StudentId"]/@value')[0],
             "密码": password,
             "姓名": tree.xpath('//*[@id="Name"]/@value')[0],
@@ -152,7 +110,7 @@ def epidemic():
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
     else:
-        post_data = {"网址": url, "学号": username, "密码": password, "姓名": name}
+        post_data = {"网址": "https://xg.kmmu.edu.cn/SPCP/Web/", "学号": username, "密码": password, "姓名": name}
         push('今天未成功签到！', json.dumps(post_data), 'json')
 
 
@@ -163,13 +121,8 @@ def get_time():
 def push(title, content, template):
     if notify and "XX" not in token:
         url = 'http://www.pushplus.plus/send'
-        data = {
-            'token': token,
-            'title': title,
-            'content': content,
-            'template': template
-        }
-        requests.post(url=url, data=data)
+        data = {'token': token, 'title': title, 'content': content, 'template': template}
+        requests.post(url, data=data)
 
 
 def main(event, context):

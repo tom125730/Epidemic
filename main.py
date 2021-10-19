@@ -1,31 +1,30 @@
-from lxml import etree
-import json
 import requests
+from uuid import uuid4
+from lxml.etree import HTML as html
+import json
 import time
+from datetime import datetime
 
 
 def epidemic():
-    url = 'http://xg.kmmu.edu.cn/SPCP/Web/'
     session = requests.session()
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'user-agent': agent
+    url = "https://xg.kmmu.edu.cn/SPCP/Web/"
+    headers = {"User-Agent": agent}
+    session.get(url, headers=headers, proxies={"http": None, "https": None})
+    parms = {
+        "ReSubmiteFlag": uuid4(),
+        "StuLoginMode": "1",
+        "txtUid": username,
+        "txtPwd": password,
+        "codeInput": ""
     }
-    resp = session.get(url=url, headers=headers)
-    tree = etree.HTML(resp.text)
-    reSubmiteFlag = tree.xpath('//*[@id="form1"]/input[1]/@value')[0]
-    data = {
-        'ReSubmiteFlag': reSubmiteFlag,
-        'txtUid': username,
-        'txtPwd': password,
-        'StuLoginMode': 1,
-        'codeInput': ''
-    }
-    resp = session.post(url=url, data=data, headers=headers)
-    tree = etree.HTML(resp.text)
+    session.post(url, data=parms, headers=headers, proxies={"http": None, "https": None})
+    url = "http://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
+    res = session.get(url, headers=headers, proxies={"http": None, "https": None})
+    tree = html(res.text)
     alert = str(tree.xpath('/html/body/script/text()'))
     if "用户名或者密码错误" in alert:
-        print(f'{get_time()} {name}用户名或者密码错误!')
+        print(f'{get_time()} {name} 用户名或者密码错误!')
         content = {
             "失败原因": "用户名或者密码错误!",
             "读取的账号": username,
@@ -35,13 +34,13 @@ def epidemic():
         return
     indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
     resp = session.get(url=indexUrl, headers=headers)
-    tree = etree.HTML(resp.text)
+    tree = html(resp.text)
     alert = str(tree.xpath('/html/body/script/text()'))
     if "已登记" in alert:
-        print(f'{get_time()} {name}当前采集日期已登记！')
+        print(f'{get_time()} {name} 当前采集日期已登记！')
         return
     elif "只能1点至18点" in alert:
-        print(f'{get_time()} {name}只能1点至18点可以填报！')
+        print(f'{get_time()} {name} 只能1点至18点可以填报！')
         return
     elif "填报信息还未配置或开启" in alert:
         print(f'{get_time()} 填报信息还未配置或开启，不能填报！！')
@@ -95,9 +94,9 @@ def epidemic():
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
     resp = session.post(url=indexUrl, data=data, headers=headers)
-    alert = str(etree.HTML(resp.text).xpath('/html/body/script/text()'))
+    alert = str(html(resp.text).xpath('/html/body/script/text()'))
     if '提交成功' in alert:
-        print(f'{get_time()} {name}签到成功！')
+        print(f'{get_time()} {name} 签到成功！')
     if time.localtime()[3] != 7:
         return
     if resp.ok and '提交成功' in alert:
@@ -130,7 +129,7 @@ def epidemic():
 
 
 def get_time():
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    return time.strftime("%m-%d %H:%M:%S", time.localtime())
 
 
 def push(title, content, template):
@@ -151,6 +150,7 @@ def main(event, context):
         user_data = json.load(user_file)
     with open('./agent.json', 'r', encoding='utf-8') as agent_file:
         agent_data = json.load(agent_file)
+    print(f'总共需要签到的人数：{len(user_data)}\n')
     for i in range(len(user_data)):
         name = user_data[i]['_name']
         username = user_data[i]['_username']
@@ -162,5 +162,7 @@ def main(event, context):
 
 
 if __name__ == '__main__':
+    now = datetime.now()
     name, username, password, agent, notify, token = "", "", "", "", "", ""
     main("", "")
+    print('\n运行耗时：', datetime.now() - now)

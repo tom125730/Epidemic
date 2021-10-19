@@ -4,7 +4,7 @@ from lxml.etree import HTML as html
 import json
 import time
 from datetime import datetime
-from re import findall
+# from re import findall
 
 
 def epidemic():
@@ -98,15 +98,7 @@ def epidemic():
             "密码": password,
             "姓名": tree.xpath('//*[@id="Name"]/@value')[0],
             "班级": tree.xpath('//*[@id="ClassName"]/@value')[0],
-            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0],
-            "家庭住址": tree.xpath('//*[@id="FaProvinceName"]/@value')[0] +
-                    tree.xpath('//*[@id="FaCityName"]/@value')[0] +
-                    tree.xpath('//*[@id="FaCountyName"]/@value')[0] +
-                    tree.xpath('//*[@id="form1"]/div[1]/div[5]/div[2]/input/@value')[0],
-            "当前所在地": tree.xpath('//*[@id="ProvinceName"]/@value')[0] +
-                     tree.xpath('//*[@id="CityName"]/@value')[0] +
-                     tree.xpath('//*[@id="CountyName"]/@value')[0] +
-                     tree.xpath('//*[@id="form1"]/div[1]/div[4]/div[2]/input/@value')[0]
+            "手机号": tree.xpath('//*[@id="MoveTel"]/@value')[0]
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
     else:

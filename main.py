@@ -86,7 +86,7 @@ def epidemic():
         'radioCount': '6',
         'checkboxCount': '0',
         'blackCount': '1',
-        'PZData': [
+        'PZData': str([
             {
                 "OptionName": "以上症状都没有",
                 "SelectId": "71a16876-3d52-4510-8c96-09b232a0161b",
@@ -123,7 +123,7 @@ def epidemic():
                 "TitleId": "6002f891-d80d-4e01-ad6d-651e01df394b",
                 "OptionType": "0"
             }
-        ],
+        ]),
         'ReSubmiteFlag': uuid4()
     }
     resp = session.post(url=url, data=data, headers=headers)
@@ -152,12 +152,7 @@ def epidemic():
         }
         push('今早签到可能失败，请自查！（附签到表单内容）', json.dumps(post_data), 'json')
     else:
-        post_data = {
-            "网址": url,
-            "学号": username,
-            "密码": password,
-            "姓名": name
-        }
+        post_data = {"网址": url, "学号": username, "密码": password, "姓名": name}
         push('今天未成功签到！', json.dumps(post_data), 'json')
 
 

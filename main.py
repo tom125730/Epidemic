@@ -22,7 +22,7 @@ def epidemic():
     url = "http://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
     res = session.get(url, headers=headers, proxies={"http": None, "https": None})
     tree = html(res.text)
-    alert = str(tree.xpath('/html/body/script/text()'))
+    alert = str(tree.xpath('/html/body/script/text()')[0])
     if "用户名或者密码错误" in alert:
         print(f'{get_time()} {name} 用户名或者密码错误!')
         content = {
@@ -35,7 +35,7 @@ def epidemic():
     indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
     resp = session.get(url=indexUrl, headers=headers)
     tree = html(resp.text)
-    alert = str(tree.xpath('/html/body/script/text()'))
+    alert = str(tree.xpath('/html/body/script/text()')[0])
     if "已登记" in alert:
         print(f'{get_time()} {name} 当前采集日期已登记！')
         return
@@ -94,10 +94,10 @@ def epidemic():
         'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
     }
     resp = session.post(url=indexUrl, data=data, headers=headers)
-    alert = str(html(resp.text).xpath('/html/body/script/text()'))
+    alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if '提交成功' in alert:
         print(f'{get_time()} {name} 签到成功！')
-    if time.localtime()[3] != 7:
+    if time.localtime()[3] != 7:  # 腾讯云函数的7点是+8时区的15点
         return
     if resp.ok and '提交成功' in alert:
         post_data = {
@@ -146,6 +146,7 @@ def push(title, content, template):
 
 def main(event, context):
     global name, username, password, agent, notify, token
+    now = datetime.now()
     with open('./config.json', 'r', encoding='utf-8') as user_file:
         user_data = json.load(user_file)
     with open('./agent.json', 'r', encoding='utf-8') as agent_file:
@@ -159,10 +160,9 @@ def main(event, context):
         notify = user_data[i]['_notify']
         token = user_data[i]['_token']
         epidemic()
+    print('\n运行耗时：', datetime.now() - now)
 
 
 if __name__ == '__main__':
-    now = datetime.now()
     name, username, password, agent, notify, token = "", "", "", "", "", ""
     main("", "")
-    print('\n运行耗时：', datetime.now() - now)

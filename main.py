@@ -4,13 +4,13 @@ from lxml.etree import HTML as html
 import json
 import time
 from datetime import datetime
+from re import findall
 
 
 def epidemic():
     session = requests.session()
     url = "https://xg.kmmu.edu.cn/SPCP/Web/"
     headers = {"User-Agent": agent}
-    session.get(url, headers=headers, proxies={"http": None, "https": None})
     parms = {
         "ReSubmiteFlag": uuid4(),
         "StuLoginMode": "1",
@@ -18,11 +18,8 @@ def epidemic():
         "txtPwd": password,
         "codeInput": ""
     }
-    session.post(url, data=parms, headers=headers, proxies={"http": None, "https": None})
-    url = "http://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
-    res = session.get(url, headers=headers, proxies={"http": None, "https": None})
-    tree = html(res.text)
-    alert = str(tree.xpath('/html/body/script/text()')[0])
+    resp = session.post(url, data=parms, headers=headers, proxies={"http": None, "https": None})
+    alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if "用户名或者密码错误" in alert:
         print(f'{get_time()} {name} 用户名或者密码错误!')
         content = {
@@ -32,10 +29,11 @@ def epidemic():
         }
         push('登陆失败！', json.dumps(content), 'json')
         return
-    indexUrl = 'http://xg.kmmu.edu.cn/SPCP/Web/Report/Index'
-    resp = session.get(url=indexUrl, headers=headers)
+    url = "http://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
+    resp = session.get(url=url, headers=headers, proxies={"http": None, "https": None})
     tree = html(resp.text)
     alert = str(tree.xpath('/html/body/script/text()')[0])
+    # alert = findall(r".*\('(.*)\',\{ic.*", str(tree.xpath('/html/body/script/text()')[0]))[0]
     if "已登记" in alert:
         print(f'{get_time()} {name} 当前采集日期已登记！')
         return
@@ -51,8 +49,6 @@ def epidemic():
                 f'表单网址：{url}Report/Index'
         push('签到失败！', error, 'txt')
         return
-    with open('./PZData.json', 'r', encoding='utf-8') as PZData_file:
-        PZData = json.load(PZData_file)
     data = {
         'StudentId': tree.xpath('//*[@id="StudentId"]/@value')[0],
         'Name': tree.xpath('//*[@id="Name"]/@value')[0],
@@ -90,10 +86,47 @@ def epidemic():
         'radioCount': '6',
         'checkboxCount': '0',
         'blackCount': '1',
-        'PZData': str(PZData),
-        'ReSubmiteFlag': tree.xpath('//*[@id="SaveBtnDiv"]/input[13]/@value')[0]
+        'PZData': [
+            {
+                "OptionName": "以上症状都没有",
+                "SelectId": "71a16876-3d52-4510-8c96-09b232a0161b",
+                "TitleId": "eb0c8db7-b4dd-4ad6-b58a-626fc3336f16",
+                "OptionType": "0"
+            },
+            {
+                "OptionName": "否，身体健康",
+                "SelectId": "083d90f5-5fa2-4a6d-a231-fe315b5104a3",
+                "TitleId": "a9a30b10-f88e-4776-ac74-b5a10fa11886",
+                "OptionType": "0"
+            },
+            {
+                "OptionName": "否，不是疑似感染者",
+                "SelectId": "994c60eb-6f68-48bd-8bda-49a8a7ea812c",
+                "TitleId": "37e33b7d-5575-48c3-b59b-d4b7f6a6a0b5",
+                "OptionType": "0"
+            },
+            {
+                "OptionName": "否",
+                "SelectId": "18e9be47-deee-4eb0-8318-935f7ec832fd",
+                "TitleId": "986a95ff-5ce4-4417-9810-b1e190594f34",
+                "OptionType": "0"
+            },
+            {
+                "OptionName": "否",
+                "SelectId": "8dce119f-8eba-45b7-ac3c-ecb49e480dd3",
+                "TitleId": "3a3a10c8-02a7-4f16-95e5-f8ef5c8bfd75",
+                "OptionType": "0"
+            },
+            {
+                "OptionName": "健康",
+                "SelectId": "fe8b77d7-0014-49e1-bea0-46b0bff13898",
+                "TitleId": "6002f891-d80d-4e01-ad6d-651e01df394b",
+                "OptionType": "0"
+            }
+        ],
+        'ReSubmiteFlag': uuid4()
     }
-    resp = session.post(url=indexUrl, data=data, headers=headers)
+    resp = session.post(url=url, data=data, headers=headers)
     alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if '提交成功' in alert:
         print(f'{get_time()} {name} 签到成功！')

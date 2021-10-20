@@ -3,9 +3,7 @@ echo "开始拷贝必要文件"
 sudo cp main.py ./serverless
 sudo cp requirements.txt ./serverless
 sudo cp config.json ./serverless
-sudo cp bot.json ./serverless
 sudo cp agent.json ./serverless
-sudo cp PZData.json ./serverless
 cd ./serverless
 
 #删除lxml默认模块版本
@@ -17,7 +15,8 @@ sudo unzip lxml.zip
 #安装云函数需要的依赖库到severless文件夹
 echo "开始安装所需模块"
 sudo -H pip install --upgrade setuptools >/dev/null
-sudo -H pip install -r ./requirements.txt -t ./
+sudo -H pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple/ -t ./
+#sudo -H pip install -r ./requirements.txt -t ./
 
 #部署至腾讯云函数
 if [ -z "$TENCENT_SECRET_ID" ] || [ -z "$TENCENT_SECRET_KEY" ]; then

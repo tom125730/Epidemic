@@ -11,8 +11,8 @@ cd ./serverless
 #删除lxml默认模块版本
 #echo "开始安装lxml"
 #sed -ie '/lxml==4.6.2/d' ./requirements.txt
-##解压lxml
-#sudo unzip lxml.zip
+#解压lxml
+sudo unzip lxml.zip
 
 #安装云函数需要的依赖库到severless文件夹
 echo "开始安装所需模块"

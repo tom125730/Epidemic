@@ -127,7 +127,7 @@ def main(event, context):
         user_data = load(user_file)
     with open('./agent.json', 'r', encoding='utf-8') as agent_file:
         agent_data = load(agent_file)
-    print(f'总共需要签到的人数：{len(user_data)}\n')
+    print(f'{get_time()} 总共需要签到的人数：{len(user_data)}\n')
     for i in range(len(user_data)):
         name = user_data[i]['_name']
         username = user_data[i]['_username']
@@ -140,7 +140,7 @@ def main(event, context):
         url = 'http://www.pushplus.plus/send'
         data = {'token': user_data[0]['_token'], 'title': "今日签到情况", 'content': msg, 'template': "txt"}
         requests.post(url, data=data)
-    print('\n运行耗时：', datetime.now() - now)
+    print(f'\n{get_time()} 运行耗时：', datetime.now() - now)
 
 
 if __name__ == '__main__':

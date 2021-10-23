@@ -1,5 +1,6 @@
 import requests
 from uuid import uuid4
+from os.path import dirname, abspath
 from lxml.etree import HTML as html
 from json import load, dumps
 from time import strftime, localtime
@@ -123,9 +124,10 @@ def main(event, context):
     global name, username, password, agent, notify, token
     now = datetime.now()
     msg = ""
-    with open('./config.json', 'r', encoding='utf-8') as user_file:
+	path = dirname(abspath(__file__))
+    with open(f'{path}/config.json', 'r', encoding='utf-8') as user_file:
         user_data = load(user_file)
-    with open('./agent.json', 'r', encoding='utf-8') as agent_file:
+    with open(f'{path}/agent.json', 'r', encoding='utf-8') as agent_file:
         agent_data = load(agent_file)
     print(f'{get_time()} 总共需要签到的人数：{len(user_data)}\n')
     for i in range(len(user_data)):

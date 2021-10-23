@@ -124,7 +124,7 @@ def main(event, context):
     global name, username, password, agent, notify, token
     now = datetime.now()
     msg = ""
-	path = dirname(abspath(__file__))
+    path = dirname(abspath(__file__))
     with open(f'{path}/config.json', 'r', encoding='utf-8') as user_file:
         user_data = load(user_file)
     with open(f'{path}/agent.json', 'r', encoding='utf-8') as agent_file:

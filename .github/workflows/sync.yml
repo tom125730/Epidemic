@@ -3,7 +3,7 @@
 name: Sync
 
 on: 
-  push: # 修改仓库文件则自动执行
+#  push: # 修改仓库文件则自动执行
   workflow_dispatch: # 手动执行
 #   schedule: # 定时执行
 #     - cron: '50 6,22 * * *' # 06:50、14:50 (UTC+8)

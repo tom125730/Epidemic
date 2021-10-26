@@ -8,7 +8,7 @@ RUN apk add --no-cache -U tzdata \
 && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 && echo "Asia/Shanghai" > /etc/timezone \
 && apk add --update --upgrade \
-&& apk add --no-cache python3 python3-dev py3-pip py3-requests py3-lxml git\
+&& apk add --no-cache python3 python3-dev py3-pip py3-requests py3-lxml git \
 && python3 -m ensurepip \
 && rm -r /usr/lib/python*/ensurepip \
 && pip3 install --upgrade pip \
@@ -20,7 +20,8 @@ RUN apk add --no-cache -U tzdata \
 && rm -rf ~/.cache/pip \
 && mkdir repo \
 && git clone https://github.com/chiupam/Epidemic.git /repo \
-&& cp /repo/config.json /data \
+&& mkdir data \
+&& if [[ ! -f /data/config.json ]]; then cp /repo/config.json /data ; fi \
 && crontab /repo/docker/cron.sh
 
 WORKDIR /data

@@ -1,7 +1,7 @@
 name: docker push
 
 on:
-#  push:
+  push:
   workflow_dispatch:
   repository_dispatch:
     types: build_docker_image

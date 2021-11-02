@@ -130,13 +130,13 @@ def main(event, context):
     with open(f'{path}/agent.json', 'r', encoding='utf-8') as agent_file:
         agent_data = load(agent_file)
     print(f'{get_time()} 总共需要签到的人数：{len(user_data)}\n')
-    for i in range(len(user_data)):
-        name = user_data[i]['_name']
-        username = user_data[i]['_username']
-        password = user_data[i]['_password']
-        agent = agent_data[i % len(agent_data)]
-        notify = user_data[i]['_notify']
-        token = user_data[i]['_token']
+    for user in user_data:
+        name = user['_name']
+        username = user['_username']
+        password = user['_password']
+        agent = agent_data[user_data.index(user) % len(agent_data)]
+        notify = user['_notify']
+        token = user['_token']
         msg += epidemic() + "\n"
     if localtime()[3] == 23:  # 腾讯云函数的7点是+8时区的15点，23点是+8时区的7点
         url = 'http://www.pushplus.plus/send'

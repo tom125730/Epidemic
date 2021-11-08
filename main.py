@@ -1,6 +1,6 @@
 import requests
 from uuid import uuid4
-from os.path import dirname, abspath
+from os.path import dirname, abspath, exists
 from lxml.etree import HTML as html
 from json import load, dumps
 from time import strftime, localtime
@@ -125,7 +125,7 @@ def main(event, context):
     now = datetime.now()
     msg = ""
     path = dirname(abspath(__file__))
-    with open(f'{path}/config.json', 'r', encoding='utf-8') as user_file:
+    with open("/data/config.json" if exists("/data/config.json") else f'{path}/config.json', 'r', encoding='utf-8') as user_file:
         user_data = load(user_file)
     with open(f'{path}/agent.json', 'r', encoding='utf-8') as agent_file:
         agent_data = load(agent_file)

@@ -17,9 +17,7 @@ RUN apk add --no-cache -U tzdata \
 && rm -rf ~/.cache/pip \
 && mkdir repo \
 && git clone https://github.com/chiupam/Epidemic.git /repo \
-&& crontab /repo/docker/cron.sh \
-&& mkdir data \
-&& if [[ ! -f /data/config.json ]]; then cp /repo/config.json /data ; fi
+&& crontab /repo/docker/cron.sh
 
 WORKDIR /data
 

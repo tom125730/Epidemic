@@ -1,0 +1,11 @@
+#!name=昆明医科大学疫情签到
+#!desc=这是昆明医科大学疫情签到的 Surge 模块订阅。
+
+[Script]
+# > 昆明医科大学疫情签到获取cookie (xg.kmmu.edu.cn)
+昆明医科大学疫情签到 = type=http-request, pattern=^https?:\/\/xg\.kmmu\.edu\.cn\/SPCP\/Web\/Report\/Index, requires-body=1, max-size=-1, script-path=https://raw.githubusercontent.com/chiupam/Epidemic/master/sruge/epidemic.js
+# > 昆明医科大学疫情签到
+昆明医科大学疫情签到 = type=cron, cronexp="13 13 13,23 * * *", wake-system=1, timeout=180, script-path=https://raw.githubusercontent.com/chiupam/Epidemic/master/sruge/epidemic.js
+
+[MITM]
+hostname = %APPEND% xg.kmmu.edu.cn

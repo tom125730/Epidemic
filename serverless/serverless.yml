@@ -19,3 +19,6 @@ inputs:
           cronExpression: '0 1 7,15 * * * *'
 #           cronExpression: '0 1 11,15 * * * *'
           enable: true
+  environment: #  环境变量
+      variables: #  环境变量对象
+        TZ: Asia/Shanghai

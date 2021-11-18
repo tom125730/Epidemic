@@ -88,7 +88,7 @@ def epidemic():
         resp = session.post(url, data=data, headers=headers)
         if '提交成功' in resp.text:
             print(f'{get_time()} {name} 签到成功！')
-        if localtime()[3] != 15:
+        if localtime()[3] == 7:
             return f'{name} 签到成功！'
         if resp.ok and '提交成功' in resp.text:
             post_data = {

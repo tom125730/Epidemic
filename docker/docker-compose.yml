@@ -1,0 +1,8 @@
+version: "2.0"
+services:
+  Epidemic:
+    image: chiupam/epidemic:latest
+    container_name: epidemic
+    restart: always
+    volumes:
+      - $PWD:/data

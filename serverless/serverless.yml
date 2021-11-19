@@ -11,7 +11,6 @@ inputs:
   description: '易班疫情防控签到'
   memorySize: 512 # 内存大小，单位MB
   timeout: 180 # 函数执行超时时间，单位秒
-  initTimeout: 30 # 初始化超时时间，单位秒
   retryNum: 1 # 重试次数
   events: # 触发器
     - timer: # 定时触发器

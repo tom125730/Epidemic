@@ -14,12 +14,12 @@ inputs:
   timeout: 180 # 函数执行超时时间，单位秒
   initTimeout: 30 # 初始化超时时间，单位秒
   retryNum: 1 # 重试次数
+  environment: #  环境变量
+      variables: #  环境变量对象
+        TZ: Asia/Shanghai
   events: # 触发器
     - timer: # 定时触发器
         parameters:
           name: ${name} #触发器名称
           cronExpression: '0 1 7,15 * * * *'
           enable: true
-  environment: #  环境变量
-      variables: #  环境变量对象
-        TZ: Asia/Shanghai

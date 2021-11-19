@@ -1,4 +1,3 @@
-
 #组件信息
 app: Epidemic
 component: scf # (必填) 引用 component 的名称，当前用到的是 tencent-scf 组件
@@ -10,15 +9,17 @@ inputs:
   handler: main.main #入口
   runtime: Python3.6 # 云函数运行时的环境
   region: ap-guangzhou # 云函数所在区域
-  description: '易班疫情防控签到'
-  timeout: 900
+  description: '昆明医科大学疫情签到'
+  memorySize: 512 # 内存大小，单位MB
+  timeout: 180 # 函数执行超时时间，单位秒
+  initTimeout: 30 # 初始化超时时间，单位秒
+  retryNum: 1 # 重试次数
   events: # 触发器
     - timer: # 定时触发器
-        name: ${name} #触发器名称
-        parameters:
-          cronExpression: '0 1 7,15 * * * *'
-#           cronExpression: '0 1 11,15 * * * *'
-          enable: true
+      name: ${name} #触发器名称
+      parameters:
+        cronExpression: '0 1 7,15 * * * *'
+        enable: true
   environment: #  环境变量
-      variables: #  环境变量对象
-        TZ: Asia/Shanghai
+    variables: #  环境变量对象
+      TZ: Asia/Shanghai

@@ -9,8 +9,7 @@ inputs:
   runtime: Python3.6 # 云函数运行时的环境
   region: ap-guangzhou # 云函数所在区域
   description: '易班疫情防控签到'
-  memorySize: 1024 # 内存大小，单位MB
-  timeout: 180 # 函数执行超时时间，单位秒
+  timeout: 180
   events: # 触发器
     - timer: # 定时触发器
       name: ${name} #触发器名称

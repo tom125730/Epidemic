@@ -2,6 +2,7 @@
 app: Epidemic
 component: scf # (必填) 引用 component 的名称，当前用到的是 tencent-scf 组件
 name: main # (必填) 创建的实例名称，请修改成您的实例名称
+
 inputs:
   name: ${app} #函数名称
   src: ./  #代码路径
@@ -12,10 +13,10 @@ inputs:
   timeout: 180
   events: # 触发器
     - timer: # 定时触发器
-      name: ${name} #触发器名称
-      parameters:
-        cronExpression: '0 1 7,15 * * * *'
-        enable: true
+        parameters:
+          name: ${name} #触发器名称
+          cronExpression: '0 1 7,15 * * * *'
+          enable: true
   environment: #  环境变量
-    variables: #  环境变量对象
-      TZ: Asia/Shanghai
+      variables: #  环境变量对象
+        TZ: Asia/Shanghai

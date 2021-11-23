@@ -8,7 +8,7 @@ def main():
     with open("/data/config.json" if exists("/data/config.json") else f'{dirname(abspath(__file__))}/config.json', 'r', encoding='utf-8') as user_file:
         user_data = load(user_file)
     for user in user_data:
-        if len(user['_token']) > 10:
+        if len(user['_token']) > 10 and user['_notify'] and "xxxxxx" not in user['_token']:
             name = user['_name']
             content = ""
             data = {'token': user['_token'], 'title': "标题", 'content': content, 'template': "txt"}

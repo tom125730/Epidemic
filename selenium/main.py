@@ -26,7 +26,7 @@ class DailyReport(object):
         # self.options.add_argument('blink-settings=imagesEnabled=false')
         self.options.add_argument('--user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.3"')
         self.client = webdriver.Chrome(options=self.options)
-        self.index_url = "https://xg.kmmu.edu.cn/SPCP/Web/"
+        self.index_url = "https://e.kmmu.edu.cn/lyuapServer/login?service=https://xg.kmmu.edu.cn/SPCP/Web/"
         self.account_url = "https://xg.kmmu.edu.cn/SPCP/Web/Account/ChooseSys"
         self.report_url = "https://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
         self.path = dirname(abspath(__file__))
@@ -44,7 +44,7 @@ class DailyReport(object):
         right = left + code.size['width']
         bottom = top + code.size['height']
         picture = image.open(r'./code.png')
-        picture = picture.crop((left, top, right, bottom))
+        picture = picture.crop((left, top, right, bottom + 3))
         picture.save(r'./code.png')
         url = 'http://upload.chaojiying.net/Upload/Processing.php'
         params = {

@@ -1,4 +1,5 @@
 import requests
+import urllib3
 from uuid import uuid4
 from os.path import dirname, abspath, exists
 from lxml.etree import HTML as html
@@ -6,21 +7,24 @@ from json import load, dumps
 from time import strftime, localtime
 from datetime import datetime
 
+urllib3.disable_warnings()
 
-def epidemic():
-    session = requests.session()
+
+def epidemic(session):
     url = "https://xg.kmmu.edu.cn/SPCP/Web/"
     headers = {"User-Agent": agent}
     parms = {"ReSubmiteFlag": uuid4(), "StuLoginMode": "1", "txtUid": username, "txtPwd": password, "codeInput": ""}
-    resp = session.post(url, data=parms, headers=headers, proxies={"http": None, "https": None})
+    resp = session.post(url, data=parms, headers=headers, verify=False)
     alert = str(html(resp.text).xpath('/html/body/script/text()')[0])
     if "用户名或者密码错误" in alert:
         print(f'{get_time()} {name} 用户名或者密码错误!')
         content = {"失败原因": "用户名或者密码错误!", "读取的账号": username, "读取的密码": password}
         push('登陆失败！', dumps(content), 'json')
         return f'{name} 用户名或者密码错误!'
+    url = "https://xg.kmmu.edu.cn/SPCP/Web/Account/ChooseSys"
+    session.get(url, headers=headers, verify=False)
     url = "https://xg.kmmu.edu.cn/SPCP/Web/Report/Index"
-    resp = session.get(url, headers=headers, proxies={"http": None, "https": None})
+    resp = session.get(url, headers=headers, verify=False)
     tree = html(resp.text)
     try:
         alert = str(tree.xpath('/html/body/script/text()')[0])
@@ -85,7 +89,7 @@ def epidemic():
             ]),
             'ReSubmiteFlag': uuid4()
         }
-        resp = session.post(url, data=data, headers=headers)
+        resp = session.post(url, data=data, headers=headers, verify=False)
         if '提交成功' in resp.text:
             print(f'{get_time()} {name} 签到成功！')
         if localtime()[3] < 15:
@@ -125,6 +129,17 @@ def main(event, context):
     now = datetime.now()
     msg = ""
     path = dirname(abspath(__file__))
+    session = requests.session()
+    url = "https://xg.kmmu.edu.cn/wengine-auth/token-login"
+    params = {
+        "wengine-ticket": "85e5a624-2850-49cb-b3ee-27828f6d7a4e",
+        "from": "https://xg.kmmu.edu.cn/SPCP/Web/?ticket=ST-4436-iZPnQ20xdm0q-RnLR8f9P6bqivw-55db7e645828"
+    }
+    headers = {"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.3"}
+    session.get(url, headers=headers, params=params, verify=False)
+    url = "https://xg.kmmu.edu.cn/SPCP/Web/"
+    params = {"ticket": "ST-4436-iZPnQ20xdm0q-RnLR8f9P6bqivw-55db7e645828"}
+    session.get(url, headers=headers, params=params, verify=False)
     with open("/data/config.json" if exists("/data/config.json") else f'{path}/config.json', 'r', encoding='utf-8') as user_file:
         user_data = load(user_file)
     with open(f'{path}/agent.json', 'r', encoding='utf-8') as agent_file:
@@ -137,7 +152,7 @@ def main(event, context):
         agent = agent_data[user_data.index(user) % len(agent_data)]
         notify = user['_notify']
         token = user['_token']
-        msg += epidemic() + "\n"
+        msg += epidemic(session) + "\n"
     if localtime()[3] < 15:
         url = 'http://www.pushplus.plus/send'
         data = {'token': user_data[0]['_token'], 'title': "今日签到情况", 'content': msg, 'template': "txt"}
